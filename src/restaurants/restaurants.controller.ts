@@ -6,14 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
+import { StatisticsRestaurantsDto } from './dto/statistics-restaurants.dto';
 
 @Controller('restaurants')
 export class RestaurantsController {
   constructor(private readonly restaurantsService: RestaurantsService) {}
+
+  @Get('/statistics')
+  async statistics(
+    @Query(new ValidationPipe({ transform: true }))
+    query: StatisticsRestaurantsDto,
+  ) {
+    return this.restaurantsService.findByArea(query);
+  }
 
   @Post()
   create(@Body() data: CreateRestaurantDto) {

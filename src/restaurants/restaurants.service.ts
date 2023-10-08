@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-// import { CreateRestaurantDto } from './dto/create-restaurant.dto';
-// import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { PrismaService } from '../prisma.service';
 import { Prisma, restaurants } from '@prisma/client';
+import { StatisticsRestaurantsDto } from './dto/statistics-restaurants.dto';
 
 @Injectable()
 export class RestaurantsService {
@@ -37,5 +36,11 @@ export class RestaurantsService {
     return this.prisma.restaurants.delete({
       where: { id },
     });
+  }
+
+  async findByArea(query: StatisticsRestaurantsDto) {
+    console.log('query :>> ', query);
+    return this.prisma
+      .$queryRaw`SELECT * FROM restaurants WHERE ST_DWithin(geography(ST_MakePoint(lat,lng)),geography(ST_MakePoint(${query.longitude},${query.latitude})),${query.radius})`;
   }
 }
