@@ -25,7 +25,6 @@ export class RestaurantsService {
     id: string,
     data: Prisma.restaurantsUpdateInput,
   ): Promise<restaurants> {
-    console.log('data :>> ', data);
     return this.prisma.restaurants.update({
       data,
       where: { id },
@@ -39,8 +38,18 @@ export class RestaurantsService {
   }
 
   async findByArea(query: StatisticsRestaurantsDto) {
-    console.log('query :>> ', query);
-    return this.prisma
-      .$queryRaw`SELECT * FROM restaurants WHERE ST_DWithin(geography(ST_MakePoint(lat,lng)),geography(ST_MakePoint(${query.longitude},${query.latitude})),${query.radius})`;
+    const res = await this.prisma
+      .$queryRaw`SELECT * FROM restaurants WHERE ST_DWithin(ST_MakePoint(restaurants.lat,restaurants.lng)::geography,ST_MakePoint(${query.latitude},${query.longitude})::geography,${query.radius});`;
+    if (Array.isArray(res) && res.length > 0) {
+      const count = res.length;
+      const avg = res.reduce((a, b) => a + b.rating, 0) / count;
+      const std = Math.sqrt(
+        res.map((x) => Math.pow(x.rating - avg, 2)).reduce((a, b) => a + b) /
+          count,
+      );
+      return { count, avg, std };
+    } else {
+      return {};
+    }
   }
 }
