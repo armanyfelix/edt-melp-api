@@ -27,7 +27,7 @@ export class RestaurantsController {
   }
 
   @Post()
-  create(@Body() data: CreateRestaurantDto) {
+  create(@Body(new ValidationPipe()) data: CreateRestaurantDto) {
     return this.restaurantsService.create(data);
   }
 
@@ -42,8 +42,10 @@ export class RestaurantsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: UpdateRestaurantDto) {
-    console.log('data :>> ', data);
+  update(
+    @Param('id') id: string,
+    @Body(new ValidationPipe()) data: UpdateRestaurantDto,
+  ) {
     return this.restaurantsService.update(id, data);
   }
 
