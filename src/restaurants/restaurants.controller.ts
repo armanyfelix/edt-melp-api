@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   ValidationPipe,
+  Put,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
@@ -42,6 +43,7 @@ export class RestaurantsController {
   }
 
   @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body(new ValidationPipe()) data: UpdateRestaurantDto,

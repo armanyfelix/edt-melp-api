@@ -1,11 +1,13 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateRestaurantDto } from './create-restaurant.dto';
-import { IsNumber, IsString } from 'class-validator';
+import { IsInt, IsNumber, IsString, Max, Min } from 'class-validator';
 
 export class UpdateRestaurantDto extends PartialType(CreateRestaurantDto) {
   @IsString()
   name?: string;
-  @IsNumber()
+  @IsInt()
+  @Min(0)
+  @Max(4)
   rating?: number;
   @IsString()
   site?: string;
