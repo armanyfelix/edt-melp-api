@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
@@ -42,7 +41,6 @@ export class RestaurantsController {
     return this.restaurantsService.findOne(id);
   }
 
-  @Patch(':id')
   @Put(':id')
   update(
     @Param('id') id: string,
